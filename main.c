@@ -5,7 +5,11 @@
 ** RA: 10425707
 */
 
+// TODO comentar as coisas
+
 #include <stdio.h>
+
+char *compactar_string(char *string_entrada);
 
 char entrada[300];
 char dicionario[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
@@ -19,6 +23,18 @@ int main(int argc, char *argv[]) {
 
   fgets(entrada, sizeof(entrada), stdin);
 
-  printf("%s", entrada);
+  compactar_string(entrada);
+
   return 0;
+}
+
+// Compacta a entrada do usuário usando a compactação LZW
+char *compactar_string(char *string_entrada) {
+
+  // Itera sobre a string
+  char *c = string_entrada;
+  while (*c) {
+    *c++;
+  }
+  return "NUTS";
 }
