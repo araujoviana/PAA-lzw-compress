@@ -7,10 +7,13 @@
 
 #include <stdio.h>
 
-char entrada[] = "";
+char entrada[300];
 
 int main(int argc, char *argv[]) {
   printf("Insira o texto: ");
 
+  fgets(entrada, sizeof(entrada), stdin);
+
+  printf("%s", entrada);
   return 0;
 }
