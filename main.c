@@ -10,6 +10,7 @@
 #include <stdio.h>
 
 char *compactar_string(char *string_entrada);
+int verificar_presenca(char *sequencia);
 
 char entrada[300];
 char dicionario[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
@@ -31,10 +32,27 @@ int main(int argc, char *argv[]) {
 // Compacta a entrada do usuário usando a compactação LZW
 char *compactar_string(char *string_entrada) {
 
+  int dentro;
+
   // Itera sobre a string
   char *c = string_entrada;
   while (*c) {
+    dentro = verificar_presenca(c);
+    printf("%d\n", dentro);
     *c++;
   }
+
   return "NUTS";
+}
+
+// TODO mudar esse nome de função
+int verificar_presenca(char *sequencia) {
+  char *c = dicionario;
+  while (*c) {
+    if (*c == *sequencia) {
+      return 1;
+    }
+    *c++;
+  }
+  return 0;
 }
