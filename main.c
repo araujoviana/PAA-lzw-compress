@@ -32,27 +32,28 @@ int main(int argc, char *argv[]) {
 // Compacta a entrada do usuário usando a compactação LZW
 char *compactar_string(char *string_entrada) {
 
-  int dentro;
-
   // Itera sobre a string
   char *c = string_entrada;
   while (*c) {
-    dentro = verificar_presenca(c);
-    printf("%d\n", dentro);
+    if (verificar_presenca(c)) {
+      printf("Existe: %c\n", *c);
+    } else {
+      printf("Não existe: %c\n", *c);
+    }
     *c++;
   }
 
-  return "NUTS";
+  return string_entrada;
 }
 
 // TODO mudar esse nome de função
 int verificar_presenca(char *sequencia) {
-  char *c = dicionario;
-  while (*c) {
-    if (*c == *sequencia) {
+  char *d = dicionario;
+  while (*d) {
+    if (*d == *sequencia) {
       return 1;
     }
-    *c++;
+    *d++;
   }
   return 0;
 }
