@@ -8,18 +8,38 @@
 // TODO comentar as coisas
 
 #include <stdio.h>
+#include <stdlib.h>
 
 char *compactar_string(char *string_entrada);
 int verificar_presenca(char *sequencia);
 
 char entrada[300];
-char dicionario[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-                     'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-                     'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
-                     'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-                     's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+/*******************************************************************************/
+/* char dicionario[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+ */
+/*                      'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
+ */
+/*                      'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+ */
+/*                      'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+ */
+/*                      's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}; */
+/*******************************************************************************/
+
 
 int main(int argc, char *argv[]) {
+
+// Aloca o dicionário inicial para conter os alfabeto latino em maiúsculo e
+// minúsculo
+int initial_size = 56;
+char *dicionario = malloc(initial_size * sizeof(char));
+
+  // Insere todas as letras dentro do dicionário
+  for (int i = 0; i < 26; i++) {
+    dicionario[i] = 'a' + i;      // Minúsculo
+    dicionario[26 + i] = 'A' + i; // Maiúsculo
+  }
+
   printf("Insira o texto: ");
 
   fgets(entrada, sizeof(entrada), stdin);
