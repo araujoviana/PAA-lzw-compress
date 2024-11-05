@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
   printf("Insira o texto a ser compactado: ");
   fgets(entrada, sizeof(entrada), stdin);
 
-  compactar_string(entrada);
+  compactar_string(entrada, dic);
 
   return 0;
 }
@@ -67,18 +67,19 @@ void preencher_dicionario(struct dicionario dic) {
 // Compacta a entrada do usuário usando a compactação LZW
 char *compactar_string(char *string_entrada, struct dicionario dic) {
 
-  char *w;
-  char c;
+  char *sequencia_atual;
+  char proximo_char;
 
   // Itera sobre a string
   char *d = string_entrada;
-  *w = *d;
+  *sequencia_atual = *d;
   while (*d) {
-    c = *w + 1;
-    if (verificar_presenca(w)) {
-      strcat(w, &c);
+    proximo_char = *sequencia_atual + 1;
+    if (verificar_presenca(sequencia_atual, dic)) {
+      strcat(sequencia_atual, &proximo_char);
     } else {
-      printf("%s", w); // FIXME imprima o valor numérico no dicionário
+      printf("%s",
+             sequencia_atual); // FIXME imprima o valor numérico no dicionário
     }
 
     *d++;
