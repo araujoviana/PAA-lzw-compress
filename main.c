@@ -12,6 +12,8 @@
 // REVIEW pode usar isso?
 #include <string.h>
 
+#define MAX_SEQUENCIA 100
+
 // Dicionário para armazenar as sequências usadas na compactação da entrada do
 // usuário
 struct dicionario {
@@ -67,35 +69,48 @@ void preencher_dicionario(struct dicionario dic) {
 // Compacta a entrada do usuário usando a compactação LZW
 char *compactar_string(char *string_entrada, struct dicionario dic) {
 
-  char *sequencia_atual;
-  char proximo_char;
+  // TODO comentário aqui
+  char sequencia_compactada[MAX_SEQUENCIA] = "";
+  char sequencia_atual[MAX_SEQUENCIA] = "";
 
-  // Itera sobre a string
-  char *d = string_entrada;
-  *sequencia_atual = *d;
-  while (*d) {
-    proximo_char = *sequencia_atual + 1;
-    if (verificar_presenca(sequencia_atual, dic)) {
-      strcat(sequencia_atual, &proximo_char);
+  // Itera sobre a entrada do usuário
+  char *char_atual = string_entrada;
+  while (*char_atual) {
+    char char_proximo = *char_atual;
+
+    // Adiciona o caractere atual à sequência atual,
+    // TODO explicar pq essa função
+    strncat(sequencia_atual, &char_proximo, 1);
+
+    // Se a sequencia estiver presente no dicionário concatena o caracter à
+    // sequencia
+    if (verificar_presenca(string_entrada, dic)) {
+      char_atual++;
     } else {
-      printf("%s",
-             sequencia_atual); // FIXME imprima o valor numérico no dicionário
+      strncat(sequencia_compactada, sequencia_atual,
+              MAX_SEQUENCIA - strlen(sequencia_compactada) - 1);
+      snprintf(sequencia_atual, sizeof(sequencia_atual), "%c", char_proximo);
+      char_atual++;
     }
-
-    *d++;
   }
 
-  return string_entrada;
+  if (strlen(sequencia_atual) > 0) {
+    strncat(sequencia_compactada, sequencia_atual, MAX_SEQUENCIA - strlen(sequencia_compactada) -1);
+  }
+  return sequencia_compactada;
 }
 
-// TODO mudar esse nome de função
-int verificar_presenca(char *sequencia, struct dicionario dic) {
-  char *d = dicionario;
-  while (*d) {
-    if (*d == *sequencia) {
+// TODO mudar esse nome de função e dos argumentos
+int verificar_presenca(char *entrada, struct dicionario dic) {
+  // Itera sobre cada sequência dentro do dicionário
+  char **sequencia_atual = dic.sequencia;
+  while (*sequencia_atual) {
+    // Verifica se a sequência do usuário é igual à sequência atual do
+    // dicionário
+    if (!(strcmp(entrada, *sequencia_atual))) {
       return 1;
     }
-    *d++;
+    sequencia_atual++;
   }
   return 0;
 }
