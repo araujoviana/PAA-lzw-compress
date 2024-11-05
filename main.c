@@ -21,7 +21,7 @@ struct dicionario {
   int *indice;
 };
 
-void preencher_dicionario(struct dicionario dic);
+void preencher_dicionario(struct dicionario *dic);
 char *compactar_string(char *string_entrada, struct dicionario dic);
 int verificar_presenca(char *sequencia, struct dicionario dic);
 
@@ -29,18 +29,42 @@ int verificar_presenca(char *sequencia, struct dicionario dic);
 char entrada[300];
 
 int main(int argc, char *argv[]) {
+  // Quantidade de letras no alfabeto latino minúsculo e maiúsculo
   int numero_elementos = 56;
 
   struct dicionario dic;
   dic.sequencia = malloc(numero_elementos * sizeof(char *));
+  dic.indice = malloc(numero_elementos * sizeof(int));
 
-  preencher_dicionario(dic);
+  preencher_dicionario(&dic);
 
   // Lê a entrada do usuário
   printf("Insira o texto a ser compactado: ");
   fgets(entrada, sizeof(entrada), stdin);
 
-  compactar_string(entrada, dic);
+  // REVIEW precisa disso?
+  // Remove a nova linha da entrada, se existir
+  entrada[strcspn(entrada, "\n")] = 0;
+
+  char *entrada_compactada = compactar_string(entrada, dic);
+  printf("Texto compactado: %s\n", entrada_compactada);
+
+  /*
+  **
+  **
+  **
+  ** Aqui ficaria a descompactação do texto
+  **
+  **
+  **
+  **
+  */
+
+  for (int i = 0; i < numero_elementos; i++) {
+    free(dic.sequencia[i]);
+  }
+  free(dic.sequencia);
+  free(dic.indice);
 
   return 0;
 }
@@ -95,7 +119,8 @@ char *compactar_string(char *string_entrada, struct dicionario dic) {
   }
 
   if (strlen(sequencia_atual) > 0) {
-    strncat(sequencia_compactada, sequencia_atual, MAX_SEQUENCIA - strlen(sequencia_compactada) -1);
+    strncat(sequencia_compactada, sequencia_atual,
+            MAX_SEQUENCIA - strlen(sequencia_compactada) - 1);
   }
   return sequencia_compactada;
 }
