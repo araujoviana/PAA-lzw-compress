@@ -12,7 +12,10 @@
 // REVIEW pode usar isso?
 #include <string.h>
 
+// Tamanho máximo de uma sequência de caracteres
 #define MAX_SEQUENCIA 100
+// Quantidade de letras no alfabeto latino minúsculo e maiúsculo
+#define TAMANHO_ALFABETO 56
 
 // Dicionário para armazenar as sequências usadas na compactação da entrada do
 // usuário
@@ -29,12 +32,10 @@ int verificar_presenca(char *sequencia, struct dicionario dic);
 char entrada[300];
 
 int main(int argc, char *argv[]) {
-  // Quantidade de letras no alfabeto latino minúsculo e maiúsculo
-  int numero_elementos = 56;
 
   struct dicionario dic;
-  dic.sequencia = malloc(numero_elementos * sizeof(char *));
-  dic.indice = malloc(numero_elementos * sizeof(int));
+  dic.sequencia = malloc(TAMANHO_ALFABETO * sizeof(char *));
+  dic.indice = malloc(TAMANHO_ALFABETO * sizeof(int));
 
   preencher_dicionario(&dic);
 
@@ -60,7 +61,7 @@ int main(int argc, char *argv[]) {
   **
   */
 
-  for (int i = 0; i < numero_elementos; i++) {
+  for (int i = 0; i < TAMANHO_ALFABETO; i++) {
     free(dic.sequencia[i]);
   }
   free(dic.sequencia);
@@ -71,21 +72,21 @@ int main(int argc, char *argv[]) {
 
 // Preenche o dicionário com todas as letras do alfabeto latino, maiúsculas e
 // minúsculas, e os indices com suas posições corretas
-void preencher_dicionario(struct dicionario dic) {
+void preencher_dicionario(struct dicionario *dic) {
   int contador_indice = 0;
   for (int i = 0; i < 26; i++) {
-    dic.sequencia[i] = malloc(2 * sizeof(char));
-    dic.sequencia[i][0] = 'A' + i;
-    dic.sequencia[i][1] = '\0';
-    dic.indice[contador_indice] = contador_indice;
+    dic->sequencia[i] = malloc(2 * sizeof(char));
+    dic->sequencia[i][0] = 'A' + i;
+    dic->sequencia[i][1] = '\0';
+    dic->indice[contador_indice] = contador_indice;
     contador_indice++;
   }
 
   for (int i = 0; i < 26; i++) {
-    dic.sequencia[26 + i] = malloc(2 * sizeof(char));
-    dic.sequencia[26 + i][0] = 'a' + i;
-    dic.sequencia[26 + i][1] = '\0';
-    dic.indice[contador_indice] = contador_indice;
+    dic->sequencia[26 + i] = malloc(2 * sizeof(char));
+    dic->sequencia[26 + i][0] = 'a' + i;
+    dic->sequencia[26 + i][1] = '\0';
+    dic->indice[contador_indice] = contador_indice;
     contador_indice++;
   }
 }
@@ -94,7 +95,7 @@ void preencher_dicionario(struct dicionario dic) {
 char *compactar_string(char *string_entrada, struct dicionario dic) {
 
   // TODO comentário aqui
-  char sequencia_compactada[MAX_SEQUENCIA] = "";
+  static char sequencia_compactada[MAX_SEQUENCIA] = "";
   char sequencia_atual[MAX_SEQUENCIA] = "";
 
   // Itera sobre a entrada do usuário
@@ -129,10 +130,10 @@ char *compactar_string(char *string_entrada, struct dicionario dic) {
 int verificar_presenca(char *entrada, struct dicionario dic) {
   // Itera sobre cada sequência dentro do dicionário
   char **sequencia_atual = dic.sequencia;
-  while (*sequencia_atual) {
+  for (int i = 0; i < 56; i++) {
     // Verifica se a sequência do usuário é igual à sequência atual do
     // dicionário
-    if (!(strcmp(entrada, *sequencia_atual))) {
+    if (strcmp(entrada, *sequencia_atual) == 0) {
       return 1;
     }
     sequencia_atual++;
