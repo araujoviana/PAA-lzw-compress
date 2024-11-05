@@ -69,12 +69,12 @@ void preencher_dicionario(struct dicionario *dic) {
   }
 }
 
+// TODO Adicionar partes não presentes no dicionário a ele! só ta concatenando!
 // Compacta a entrada do usuário usando a compactação LZW
 char *compactar_string(char *string_entrada, struct dicionario dic) {
   static char sequencia_compactada[MAX_SEQUENCIA] = "";
   char sequencia_atual[MAX_SEQUENCIA] = "";
-  char *char_atual =
-      string_entrada;
+  char *char_atual = string_entrada;
 
   while (*char_atual) {
     char char_proximo = *char_atual;
