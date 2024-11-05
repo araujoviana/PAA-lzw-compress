@@ -5,74 +5,106 @@
 ** RA: 10425707
 */
 
-// TODO comentar as coisas
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-char *compactar_string(char *string_entrada, char *dicionario);
-int verificar_presenca(char *sequencia, char *dicionario);
+// Tamanho máximo de uma sequência de caracteres
+#define MAX_SEQUENCIA 100
+// Quantidade de letras no alfabeto latino minúsculo e maiúsculo
+#define TAMANHO_ALFABETO 52
 
+// Dicionário para armazenar as sequências usadas na compactação da entrada do
+// usuário
+struct dicionario {
+  char **sequencia;
+};
+
+void preencher_dicionario(struct dicionario *dic);
+char *compactar_string(char *string_entrada, struct dicionario dic);
+int verificar_presenca(char *sequencia_atual, struct dicionario dic);
+
+// Entrada do usuário
 char entrada[300];
-/*******************************************************************************/
-/* char dicionario[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
- */
-/*                      'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
- */
-/*                      'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
- */
-/*                      'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
- */
-/*                      's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}; */
-/*******************************************************************************/
 
 int main(int argc, char *argv[]) {
+  struct dicionario dic;
+  dic.sequencia = malloc(TAMANHO_ALFABETO * sizeof(char *));
 
-  // Aloca o dicionário inicial para conter os alfabeto latino em maiúsculo e
-  // minúsculo
-  int initial_size = 56;
-  char *dicionario = malloc(initial_size * sizeof(char));
+  preencher_dicionario(&dic);
 
-  // Insere todas as letras dentro do dicionário
-  for (int i = 0; i < 26; i++) {
-    dicionario[i] = 'a' + i;      // Minúsculo
-    dicionario[26 + i] = 'A' + i; // Maiúsculo
-  }
-
-  printf("Insira o texto: ");
-
+  // Lê a entrada do usuário
+  printf("Insira o texto a ser compactado: ");
   fgets(entrada, sizeof(entrada), stdin);
 
-  compactar_string(entrada, dicionario);
+  // Remove a nova linha da entrada, se existir.
+  // strcspn encontra o indice do caractere '\n'
+  entrada[strcspn(entrada, "\n")] = 0;
+
+  char *entrada_compactada = compactar_string(entrada, dic);
+  printf("Texto compactado: %s\n", entrada_compactada);
+
+  // Libera a memória do dicionário
+  for (int i = 0; i < TAMANHO_ALFABETO; i++) {
+    free(dic.sequencia[i]);
+  }
+  free(dic.sequencia);
 
   return 0;
 }
 
-// Compacta a entrada do usuário usando a compactação LZW
-char *compactar_string(char *string_entrada, char *dicionario) {
-
-  // Itera sobre a string
-  char *c = string_entrada;
-  while (*c) {
-    if (verificar_presenca(c, dicionario)) { // TODO aqui!!! faz ele relocar memória caso n tenha aqui o negocio
-      printf("Existe: %c\n", *c);
-    } else {
-      printf("Não existe: %c\n", *c);
-    }
-    *c++;
+// Preenche o dicionário com todas as letras do alfabeto latino, maiúsculas e
+// minúsculas
+void preencher_dicionario(struct dicionario *dic) {
+  for (int i = 0; i < 26; i++) {
+    dic->sequencia[i] = malloc(2 * sizeof(char));
+    dic->sequencia[i][0] = 'A' + i;
+    dic->sequencia[i][1] = '\0';
   }
 
-  return string_entrada;
+  for (int i = 0; i < 26; i++) {
+    dic->sequencia[26 + i] = malloc(2 * sizeof(char));
+    dic->sequencia[26 + i][0] = 'a' + i;
+    dic->sequencia[26 + i][1] = '\0';
+  }
 }
 
-// TODO mudar esse nome de função
-int verificar_presenca(char *sequencia, char *dicionario) {
-  char *d = dicionario;
-  while (*d) {
-    if (*d == *sequencia) {
+// Compacta a entrada do usuário usando a compactação LZW
+char *compactar_string(char *string_entrada, struct dicionario dic) {
+  static char sequencia_compactada[MAX_SEQUENCIA] = "";
+  char sequencia_atual[MAX_SEQUENCIA] = "";
+  char *char_atual =
+      string_entrada;
+
+  while (*char_atual) {
+    char char_proximo = *char_atual;
+    strncat(sequencia_atual, &char_proximo, 1);
+
+    if (verificar_presenca(sequencia_atual, dic)) {
+      char_atual++;
+    } else {
+      strncat(sequencia_compactada, sequencia_atual,
+              MAX_SEQUENCIA - strlen(sequencia_compactada) - 1);
+      snprintf(sequencia_atual, sizeof(sequencia_atual), "%c", char_proximo);
+      char_atual++;
+    }
+  }
+
+  // Append the last sequence if there is any
+  if (strlen(sequencia_atual) > 0) {
+    strncat(sequencia_compactada, sequencia_atual,
+            MAX_SEQUENCIA - strlen(sequencia_compactada) - 1);
+  }
+
+  return sequencia_compactada;
+}
+
+// Verifica se a sequência está presente no dicionário
+int verificar_presenca(char *sequencia_atual, struct dicionario dic) {
+  for (int i = 0; i < TAMANHO_ALFABETO; i++) {
+    if (strcmp(sequencia_atual, dic.sequencia[i]) == 0) {
       return 1;
     }
-    *d++;
   }
   return 0;
 }
