@@ -8,6 +8,9 @@
 // TODO comentar as coisas
 
 #include <stdio.h>
+// REVIEW pode usar isso?
+#include <stdlib.h>
+#include <string.h>
 
 char *compactar_string(char *string_entrada);
 int verificar_presenca(char *sequencia);
@@ -32,15 +35,21 @@ int main(int argc, char *argv[]) {
 // Compacta a entrada do usuário usando a compactação LZW
 char *compactar_string(char *string_entrada) {
 
+  char *w;
+  char c;
+
   // Itera sobre a string
-  char *c = string_entrada;
-  while (*c) {
-    if (verificar_presenca(c)) {
-      printf("Existe: %c\n", *c);
+  char *d = string_entrada;
+  *w = *d;
+  while (*d) {
+    c = *w + 1;
+    if (verificar_presenca(w)) {
+      strcat(w, &c);
     } else {
-      printf("Não existe: %c\n", *c);
+      printf("%s", w); // FIXME imprima o valor numérico no dicionário
     }
-    *c++;
+
+    *d++;
   }
 
   return string_entrada;
